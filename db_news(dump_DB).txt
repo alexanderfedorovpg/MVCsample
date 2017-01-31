@@ -1,0 +1,17 @@
+CREATE TABLE tb_comments
+(
+    id INTEGER DEFAULT nextval('tb_comments_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    full_name VARCHAR(255),
+    comment TEXT[],
+    fk_tb_news INTEGER,
+    CONSTRAINT tb_comments_fk_tb_news_fkey FOREIGN KEY (fk_tb_news) REFERENCES tb_news (id)
+);
+CREATE TABLE tb_news
+(
+    id BIGINT DEFAULT nextval('tb_news_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    header TEXT,
+    page_text TEXT,
+    meta TEXT,
+    date TIMESTAMP DEFAULT now(),
+    status BOOLEAN DEFAULT false
+);
