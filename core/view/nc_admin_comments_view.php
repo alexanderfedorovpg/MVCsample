@@ -66,13 +66,13 @@
         function open_comment(id) {
 
             $.ajax({
-                url: '/news_item/get_item_news?id='+id,
+                url: '/comments/get_one?id='+id,
                 dataType: 'json',
                 cache: false,
                 success: function (data) {
                     $('input[name=pid]').val(data['id']);
                     $('input[name=full_name]').val(data['full_name']);
-                    $('textarea[name=comment]').text(data['comment'])
+                    $('textarea[name=comment]').text(data['comment']);
                     jQuery.noConflict();
                     $('#modal').modal();
                 }
