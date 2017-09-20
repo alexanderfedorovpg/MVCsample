@@ -1,59 +1,142 @@
 <?php
 
+	class Controller_ncadmin extends Controller {
+		/**
+		 * @var string
+		 */
+		public $action;
 
-    class Controller_ncadmin extends Controller
-    {
-        public $action;
-
-        function __construct()
-        {
-            $this->model = new Model_ncadmin();
-            $this->view = new View();
-            $this->action = isset($_POST['action'])? $_POST['action'] : '';
-        }
-        function action_page()
-        {
-            switch ($this->action){
-
-                case 'post_del':  $this->model->delete_post($_POST['post_id']);
-                    break;
-
-                case 'post_change': $this->model->change_post($_POST);
-                    break;
-
-                case 'post_add': $this->model->post_add($_POST);
-                     break;
-            }
-
-            $data = $this->model->get_table_admin();
-            $this->view->show_view('ncadmin_view.php', 'template_view.php', $data);
-
-        }
+		/**
+		 * Controller_ncadmin constructor.
+		 */
+		function __construct() {
+			parent::__construct();
+			$this->model  = new Model_ncadmin();
+			$this->action = isset( $_POST['action'] ) ? $_POST['action'] : '';
+		}
 
 
-
-        function action_comments()
-        {
-
-
-            include  "core/models/model_comments.php";
-            $model_comments = new Model_comments();
-
-            switch ($this->action){
-
-                case 'comments_del': $model_comments->del_comment($_POST['comm_id']);
-                    break;
-
-                case 'comm_change': $model_comments->update_comment($_POST);
-                    break;
-            }
+		/**
+		 * Метод посторения страницы административной панели
+		 */
+		function action_page() {
 
 
-            $data = $model_comments->get_comments($_GET['id']);
-            $this->view->show_view('nc_admin_comments_view.php', 'template_view.php', $data);
-
-        }
+			if ( isset( $_COOKIE['id'] ) and isset( $_COOKIE['hash'] ) ) {
 
 
+				$userdata = $this->model->checkHash( intval( $_COOKIE['id'] ), $_COOKIE['hash'] );
 
-    }
+
+				if ( ( $userdata['user_hash'] !== $_COOKIE['hash'] ) or ( $userdata['id'] !== $_COOKIE['id'] ) ) {
+
+					setcookie( "id", "", time() - 3600 * 24 * 30 * 12, "/" );
+
+					setcookie( "hash", "", time() - 3600 * 24 * 30 * 12, "/" );
+
+
+				} else {
+
+					switch ( $this->action ) {
+
+						case 'post_del':
+							$this->model->deletePost( $_POST['post_id'] );
+							break;
+
+						case 'post_change':
+							$this->model->changePost( $_POST );
+							break;
+
+					}
+
+					$data = $this->model->getTableAdmin();
+					$this->view->showView( 'ncadmin_view.php', 'template_view.php', $data );
+
+				}
+
+			} else {
+
+				$this->view->showView( 'ncadmin_login_view.php', 'template_view.php' );
+
+			}
+
+
+		}
+
+		/**
+		 * Метод авторизации админитстатора
+		 */
+		function action_login() {
+
+
+			if ( isset( $_POST['enter'] ) ) {
+
+
+				$user = $this->model->getUser( $_POST['login'] );
+
+
+				if ( $user['password'] === md5( md5( $_POST['password'] ) ) ) {
+
+					$hash = md5( $this->generateCode( 10 ) );
+
+					setcookie( "id", intval( $user['id'] ), time() + 60 * 60 * 24 * 30 );
+
+					setcookie( "hash", $hash, time() + 60 * 60 * 24 * 30 );
+
+					$user = $this->model->setHash( $user['id'], $hash );
+
+
+					header( "Location: /ncadmin" );
+					exit();
+
+				} else {
+
+					$data = "Вы ввели неправильный логин/пароль";
+					$this->view->showView( 'ncadmin_login_view.php', 'template_view.php', $data );
+
+				}
+
+			} else {
+				$data = "Вы ввели неправильный логин/пароль";
+				$this->view->showView( 'ncadmin_login_view.php', 'template_view.php', $data );
+
+			}
+
+		}
+
+		/**
+		 * Выход из админ панели
+		 */
+		function action_logout() {
+			setcookie( "id", "", time() - 3600 );
+			setcookie( "hash", "", time() - 3600 );
+			header( "Location: /" );
+			header( "Refresh:2" );
+			exit();
+		}
+
+
+		/**Генератора хеша
+		 *
+		 * @param int $length
+		 *
+		 * @return string
+		 */
+		function generateCode( $length = 6 ) {
+
+			$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHI JKLMNOPRQSTUVWXYZ0123456789";
+
+			$code = "";
+
+			$clen = strlen( $chars ) - 1;
+			while ( strlen( $code ) < $length ) {
+
+				$code .= $chars[ mt_rand( 0, $clen ) ];
+			}
+
+			return $code;
+
+		}
+
+
+	}

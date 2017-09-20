@@ -1,14 +1,14 @@
 <?php
 
 
- class View
-    {
-        public $template_view;
-        public $content_view;
+	class View {
 
-        function show_view($content_view, $template_view, $data = null  ){
+		public $template_view;
+		public $content_view;
+		public $error_message;
+		function showView( $content_view, $template_view, $data = null ) {
 
-                include "core/view/".$template_view;
+			include "core/view/" . $template_view;
 
-        }
-    }
+		}
+	}

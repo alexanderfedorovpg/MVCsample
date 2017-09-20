@@ -37,18 +37,102 @@ body {
     -webkit-text-size-adjust: none;
 }
 
-#header{
-    background-color:rgba(69,173,218,0.13) ;
+#header {
+    background-color: rgba(69, 173, 218, 0.13);
 }
-.title h2{
+
+.title h2 {
     font-size: 21px;
 }
-.comments{
+
+.comments {
     width: 600px;
 }
+
 .comments button {
     margin-top: 10px;
 }
-footer{
+
+.feedback {
+    margin: auto;
+    max-width: 500px;
+}
+
+form.feedback > * {
+    margin-bottom: 20px;
+}
+
+footer {
     margin-top: 100px;
+}
+
+.modal-body > * {
+    margin-bottom: 20px;
+}
+
+#info {
+    text-align: center;
+    color: #c9302c;
+}
+
+th {
+    cursor: pointer;
+}
+
+th:hover {
+    background: rgba(124, 122, 128, 0.31);
+}
+
+.up:before {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\e113";
+}
+
+.down:before {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\e114";
+}
+
+.btn-label {
+    position: relative;
+    left: -12px;
+    display: inline-block;
+    padding: 6px 12px;
+    /*background: rgba(0, 0, 0, 0.15);*/
+    border-radius: 3px 0 0 3px;
+}
+
+.btn-labeled {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.separator {
+    border-right: 1px solid #dfdfe0;
+}
+
+.logout {
+    float: right;
 }

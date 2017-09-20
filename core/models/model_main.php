@@ -1,14 +1,12 @@
 <?php
 
-    class Model_main extends Model
-    {
+	class Model_main extends Model {
 
 
-        function get_news()
-        {
+		function getComments() {
 
-            $this-> get_query('SELECT * FROM tb_news WHERE status=true ORDER BY 1 ');
+			$this->get_query( 'SELECT * FROM tb_comments WHERE status=TRUE ORDER BY cdate DESC' );
 
-            return $this->res;
-        }
-    }
+			return $this->res;
+		}
+	}

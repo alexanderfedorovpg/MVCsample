@@ -1,39 +1,54 @@
 <?php
 
 
-    class Model_ncadmin extends Model
-    {
-        function get_table_admin()
-        {
+	class Model_ncadmin extends Model {
+		function getTableAdmin() {
 
-            $this-> get_query("SELECT id, header, page_text, status, meta, date
-                               FROM tb_news
-                               ORDER BY 1"
-            );
+			$this->get_query( "SELECT *
+                               FROM tb_comments
+                               ORDER BY cdate"
+			);
 
-            return $this->res;
-        }
-        function delete_post($id)
-        {
-
-            $this-> get_query("DELETE FROM tb_news WHERE id=$id");
-            $this-> get_query("DELETE FROM tb_comments WHERE fk_tb_news=$id");
-
-        }
-        function post_add($post)
-        {
-
-            $this-> get_query("INSERT INTO tb_news (header, page_text, meta) VALUES ('".$post['header']."','".$post['page_text']."','".$post['meta']."' ) ");
+			return $this->res;
+		}
 
 
-        }
+		function getUser( $login ) {
+			$this->get_query( "SELECT * FROM user WHERE login='$login' LIMIT 1" );
 
-        function change_post($post)
-        {
+			return $this->res->fetch();
+		}
 
-            $this-> get_query("UPDATE  tb_news SET   header='".$post['header']."', page_text='".$post['page_text']."', meta='".$post['meta']."', status='".$post['status']."' WHERE id= ".$post['id'] );
+		function checkHash( $id, $hash ) {
+			$this->get_query( "SELECT * FROM user WHERE id='$id' AND user_hash='$hash' LIMIT 1" );
+
+			return $this->res->fetch();
+		}
+
+		function setHash( $id, $hash ) {
+			$this->get_query( "UPDATE user SET user_hash = '$hash' WHERE id = '$id'" );
+
+			return $this->res;
+		}
+
+		function deletePost( $id ) {
+
+			$this->get_query( "DELETE FROM tb_comments WHERE id = $id" );
+
+		}
+
+		function getOnePost( $id ) {
+
+			$this->get_query( "SELECT *FROM tb_comments WHERE id = $id" );
+
+			return $this->res->fetch();
+		}
 
 
-        }
+		function changePost( $post ) {
+			$res = array_diff( $post, $this->getOnePost( $post['id'] ) );
+			$this->get_query( "UPDATE  tb_comments SET   name = '" . $post['name'] . "', COMMENT = '" . $post['comment'] . "', status = '" . ( $post['status'] ? 1 : 0 ) . "'" . ( isset( $res['comment'] ) || isset( $res['name'] ) ? ", admin_date_change=CURRENT_TIMESTAMP()" : '' ) . "  WHERE id = " . $post['id'] );
 
-    }
+		}
+
+	}

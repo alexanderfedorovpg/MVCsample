@@ -1,38 +1,45 @@
 <?php
 
 
-    class Model_comments extends Model
-    {
-        function get_comments($id)
-        {
+	class Model_comments extends Model {
+		function getComments() {
 
-            $this-> get_query('SELECT id, full_name, comment  FROM tb_comments WHERE fk_tb_news='.$id.'ORDER BY id');
+			$this->get_query( 'SELECT * FROM tb_comments WHERE status=TRUE ORDER BY cdate' );
 
-            return $this->res;
-        }
+			return $this->res;
+		}
 
-        function add_comment($get)
-        {
-            $this-> get_query("INSERT INTO tb_comments(full_name,comment, fk_tb_news) VALUES ('".$get['full_name']."' ,'".$get['comment']."',".$get['fk_tb_news'].")");
+		function addComment( $get ) {
+			$this->get_query( "INSERT INTO tb_comments(name, comment, email, path_img ) VALUES ('" . $get['name'] . "','" . $get['comment'] . "','" . $get['email'] . "','" . $get['path_img'] . "')" );
 
-        }
+		}
 
-        function del_comment($id){
+		function delComment( $id ) {
 
-            $this-> get_query("DELETE FROM tb_comments WHERE id=$id");
+			$this->get_query( "DELETE FROM tb_comments WHERE id=$id" );
 
-        }
-        function get_one_commet($id){
+		}
 
-            $this-> get_query("SELECT id, full_name, comment FROM tb_comments WHERE id=$id");
+		function getOneCommet( $id ) {
 
-            return $this->res;
+			$this->get_query( "SELECT * FROM tb_comments WHERE id=$id" );
 
-        }function update_comment($post){
+			return $this->res;
 
-            $this-> get_query("UPDATE tb_comments SET full_name ='".$post['full_name']."', comment = '".$post['comment']."'  WHERE id=".$post['pid']);
+		}
+
+		function updateComment( $post ) {
+
+			$this->get_query( "UPDATE tb_comments SET name ='" . $post['name'] . "', COMMENT = '" . $post['comment'] . "', cdate = 'CURRENT_TIMESTAMP()'   WHERE id=" . $post['pid'] );
 
 
-        }
+		}
 
-    }
+		function setCommentStatus( $post ) {
+
+			$this->get_query( "UPDATE tb_comments SET status ='" . $post['status'] . "'   WHERE id=" . $post['pid'] );
+
+
+		}
+
+	}
